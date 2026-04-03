@@ -117,7 +117,7 @@ export function initExportSystem(stage, THREE) {
     if (!propertiesPanelWasHidden) propertiesPanel.classList.remove('hidden');
     frameDrag = null;
     frameResize = null;
-    if (stage.controls && !window.ikToggleActive) stage.controls.enabled = true;
+    if (stage.controls) stage.controls.enabled = true;
   };
 
   document.getElementById('btn-close-export').addEventListener('click', closeExport);

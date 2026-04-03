@@ -58,6 +58,12 @@ let selectedBodyPart = 'Root';
 const historyStack = [];
 let historyIndex = -1;
 
+function updateStageControlsEnabled() {
+  if (!stage || !stage.controls) return;
+  const isTransformDragging = !!(transformControl && transformControl.dragging);
+  stage.controls.enabled = !isDraggingIK && !isTransformDragging;
+}
+
 // ─── History ──────────────────────────────────────────────────────────────────
 function captureState() {
   const state = {
@@ -900,16 +906,15 @@ function setupSliderListeners() {
     masterToggle.addEventListener('change', e => {
       window.ikToggleActive = e.target.checked;
       if (limbSelect) limbSelect.disabled = !window.ikToggleActive;
-      
-      // Update stage controls
-      if (stage && stage.controls) {
-        stage.controls.enabled = !window.ikToggleActive;
-      }
-      
       // Disable/enable individual IK limbs based on toggle
       IK_LIMBS.forEach(k => {
         ikEnabled[k] = window.ikToggleActive && limbSelect.value === k;
       });
+      if (!window.ikToggleActive) {
+        isDraggingIK = false;
+        activeIKHandle = null;
+      }
+      updateStageControlsEnabled();
       updatePropertiesPanel();
     });
   }
@@ -1049,6 +1054,7 @@ function onMouseDown(event) {
   if (ikHits.length > 0) {
     activeIKHandle = ikHits[0].object;
     isDraggingIK = true;
+    updateStageControlsEnabled();
     const limbKey = activeIKHandle.userData.ikLimbKey;
     const chain = IK_CHAINS[limbKey];
     const endJoint = activeMannequin[chain[chain.length - 1]];
@@ -1141,6 +1147,7 @@ function onMouseUp() {
   if (isDraggingIK) {
     isDraggingIK = false;
     activeIKHandle = null;
+    updateStageControlsEnabled();
     captureState();
   }
 }
@@ -1182,7 +1189,7 @@ function init() {
     obj.userData.exportHideWhenGizmoDisabled = true;
   });
   transformControl.addEventListener('dragging-changed', e => {
-    stage.controls.enabled = !e.value;
+    updateStageControlsEnabled();
     if (!e.value) captureState();
   });
   transformControl.addEventListener('objectChange', () => {
