@@ -2,6 +2,8 @@
 
 pose-toolkit is a local-first browser app for posing 3D mannequins, importing models, and exporting reference images.
 
+This app uses mannequin-js as its articulated human figure foundation: https://github.com/boytchev/mannequin.js/
+
 ## Requirements
 
 - Node.js 18+

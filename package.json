@@ -2,6 +2,8 @@
   "name": "pose-toolkit",
   "private": true,
   "version": "1.0.0",
+  "description": "Local-first pose reference toolkit built with Three.js and mannequin-js.",
+  "license": "GPL-3.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
